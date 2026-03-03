@@ -47,6 +47,7 @@ def check_password():
         st.markdown(f"<h2 style='text-align: center; color: #1E3A8A;'>{COMPANY_NAME}</h2>", unsafe_allow_html=True)
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
+            st.sidebar.image("logo.png", width=200) 
             st.write("### 🔐 Secure Login")
             user = st.text_input("Username")
             pw = st.text_input("Password", type="password")
@@ -225,4 +226,5 @@ if check_password():
 
     if st.sidebar.button("Logout"):
         st.session_state["authenticated"] = False
+
         st.rerun()
