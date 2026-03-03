@@ -2,3 +2,4 @@ streamlit
 pandas
 openpyxl
 num2words
+streamlit-gsheets
