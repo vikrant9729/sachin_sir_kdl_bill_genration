@@ -152,9 +152,21 @@ if check_password():
                                     d_ws = wb["Deatial"]
                                     if d_ws.max_row > 1: d_ws.delete_rows(2, d_ws.max_row)
                                     headers = [d_ws.cell(row=1, column=c).value for c in range(1, 25) if d_ws.cell(row=1, column=c).value]
+                                    
+                                    # Add Sr No header in first column if not exists
+                                    if d_ws.cell(row=1, column=1).value != "Sr No":
+                                        # Shift all headers to right by 1 column
+                                        for c_idx in range(len(headers), 0, -1):
+                                            d_ws.cell(row=1, column=c_idx+1).value = headers[c_idx-1]
+                                        d_ws.cell(row=1, column=1).value = "Sr No"
+                                        headers = ["Sr No"] + headers
+                                    
                                     last_row = 2
                                     for r_idx, (_, row) in enumerate(group.iterrows(), start=2):
-                                        for c_idx, h in enumerate(headers, start=1):
+                                        # Add Serial Number in first column
+                                        d_ws.cell(row=r_idx, column=1).value = r_idx - 1
+                                        # Fill rest of the data starting from column 2
+                                        for c_idx, h in enumerate(headers[1:], start=2):  # Skip Sr No header
                                             if h in group.columns:
                                                 d_ws.cell(row=r_idx, column=c_idx).value = row[h]
                                         last_row = r_idx
