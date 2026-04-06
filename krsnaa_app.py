@@ -141,9 +141,43 @@ if check_password():
                                 ws["A12"] = sub
                                 ws["A13"] = group['Address'].iloc[0]
                                 ws["E10"] = bill_str
-                                ws["C20"] = len(group)
-                                ws["E20"] = net_amt
-                                ws["A44"] = f"Amount (in Words): {num2words(net_amt, lang='en_IN').title()} Rupees Only"
+                                
+                                # Group by "Name of Investigation" if column exists
+                                if 'Name of Investigation' in group.columns:
+                                    inv_grouped = group.groupby('Name of Investigation')
+                                    row_num = 20
+                                    total_count = 0
+                                    total_amount = 0
+                                    
+                                    for inv_name, inv_data in inv_grouped:
+                                        inv_count = len(inv_data)
+                                        inv_amt = int(inv_data[amt_col].sum())
+                                        
+                                        # Fill investigation details
+                                        ws[f"A{row_num}"] = inv_name
+                                        ws[f"C{row_num}"] = inv_count
+                                        ws[f"E{row_num}"] = inv_amt
+                                        
+                                        total_count += inv_count
+                                        total_amount += inv_amt
+                                        row_num += 1
+                                    
+                                    # Clear remaining rows (in case of previous data)
+                                    for clear_row in range(row_num, 30):
+                                        ws[f"A{clear_row}"].value = None
+                                        ws[f"C{clear_row}"].value = None
+                                        ws[f"E{clear_row}"].value = None
+                                else:
+                                    # Fallback: Single row if column doesn't exist
+                                    ws["A20"] = cat
+                                    ws["C20"] = len(group)
+                                    ws["E20"] = net_amt
+                                    # Clear other rows
+                                    for clear_row in range(21, 30):
+                                        ws[f"A{clear_row}"].value = None
+                                        ws[f"C{clear_row}"].value = None
+                                        ws[f"E{clear_row}"].value = None
+                                ws["A44"] = f"Amount (in Words): {num2words(total_amount if 'Name of Investigation' in group.columns else net_amt, lang='en_IN').title()} Rupees Only"
                                 ws["E9"] = formatted_date
                                 ws["E11"] = period_text      
                                 ws["A45"] = narration_text   
