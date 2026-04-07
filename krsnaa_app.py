@@ -204,6 +204,25 @@ if check_password():
                                             if h in group.columns:
                                                 d_ws.cell(row=r_idx, column=c_idx).value = row[h]
                                         last_row = r_idx
+                                    
+                                    # Auto-fit columns (except Sr No column)
+                                    for col_cells in d_ws.columns:
+                                        col_letter = col_cells[0].column_letter
+                                        
+                                        # Skip Sr No column (A) - keep it fixed
+                                        if col_letter == 'A':
+                                            d_ws.column_dimensions['A'].width = 8
+                                            continue
+                                        
+                                        max_length = 0
+                                        for cell in col_cells:
+                                            if cell.value:
+                                                max_length = max(max_length, len(str(cell.value)))
+                                        
+                                        # Add padding, max width 50
+                                        adjusted_width = min(max_length + 2, 50) if max_length > 0 else 10
+                                        d_ws.column_dimensions[col_letter].width = adjusted_width
+                                    
                                     d_ws.cell(row=last_row + 2, column=1).value = "Note: Certified that all above patients are shown on the NVHCP Portal"
                                 
                                 f_stream = io.BytesIO()
