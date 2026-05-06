@@ -127,7 +127,7 @@ if check_password():
                                 percent_complete = (i + 1) / total_invoices
                                 progress_bar.progress(percent_complete)
                                 status_text.text(f"Processing: {i+1}/{total_invoices} - {sub}")
-                                bill_str = f"KDL/INV/25-26/{current_bill:03d}"
+                                bill_str = f"KDL/INV/26-27/{current_bill:03d}"
                                 amt_col = 'Hospital Credit' if 'Hospital Credit' in group.columns else 'Amount'
                                 net_amt = int(group[amt_col].sum())
                                 inv_to_col = 'Invoice To' if 'Invoice To' in group.columns else 'Invoice to'
